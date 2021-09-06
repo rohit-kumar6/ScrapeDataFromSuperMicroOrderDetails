@@ -87,13 +87,14 @@ def getOrderItems(tempList, orderDetailsList):
         orderDetailsList.append(tempListCopy)
 
 
-def GetClosedOrderDetails(closeOrder):
+def GetClosedOrderDetails(closeOrder, customerId):
     rowCount = r.count(constants.closeOrderTableRowCount)
     if r.present(constants.pageCount):
         rowCount -= 2
 
     for i in range(2, rowCount + 1):
         tempList = list()
+        tempList.append(customerId)
         tempList.append(r.read(constants.closeOrderSalesOrder.format(i)))
         tempList.append(r.read(constants.closeOrderOrderData.format(i)))
         tempList.append(r.read(constants.closeOrderCustomerPO.format(i)))
@@ -130,11 +131,11 @@ def GetOpenOrderDetails(openOrder):
         getOrderItems(tempList, openOrder)
 
 
-def GetDataOfCurrentPage(orderType, openOrder, closeOrder):
+def GetDataOfCurrentPage(orderType, openOrder, closeOrder, customerId):
     if orderType.__eq__("CustID"):
         GetOpenOrderDetails(openOrder)
     else:
-        GetClosedOrderDetails(closeOrder)
+        GetClosedOrderDetails(closeOrder, customerId)
 
 
 def runAutomation():
@@ -159,7 +160,7 @@ def runAutomation():
             r.click(constants.searchIcon)
             r.wait(2)
             if r.exist(constants.orderTable):
-                GetDataOfCurrentPage(orderType, openOrder, closeOrder)
+                GetDataOfCurrentPage(orderType, openOrder, closeOrder, customerId)
 
                 curPageNo = 2
                 dotClicked = False
@@ -184,7 +185,7 @@ def runAutomation():
                             dotClicked = False
                             curPageNo += 1
                             r.wait(2)
-                            GetDataOfCurrentPage(orderType, openOrder, closeOrder)
+                            GetDataOfCurrentPage(orderType, openOrder, closeOrder, customerId)
                             if page == pageCount:
                                 endPageReached = True
 
@@ -193,7 +194,7 @@ def runAutomation():
                                                    'Order Status', 'Sold-To', 'Ship-To', 'ESD', 'Message',
                                                    'Line No.', 'Item Number', 'Description', 'QTY Ordered',
                                                    'QTY Shipped', 'B/O QTY', 'Unit Price', 'Extended Price'])
-    closeOrderDf = pd.DataFrame(closeOrder, columns=['Sales Order', 'Order Date', 'Customer PO', 'Assembly Type',
+    closeOrderDf = pd.DataFrame(closeOrder, columns=['Sold To ID', 'Sales Order', 'Order Date', 'Customer PO', 'Assembly Type',
                                                      'Order Status', 'Sold-To', 'Ship-To', 'Line No.',
                                                      'Item Number', 'Description', 'QTY Ordered', 'QTY Shipped',
                                                      'B/O QTY', 'Unit Price', 'Extended Price'])

@@ -1,4 +1,4 @@
-url = "https://customerportal.supermicro.com/Customer/ContentPages/CustOrders.aspx"
+url = "https://customerportal.supermicro.com/SO/CustOrders.aspx"
 orderType = "//select[@id='ContentPlaceHolder1_ddlSearchType']"
 fromDate = "//input[@id='ContentPlaceHolder1_txtFrom']"
 customerId = "//select[@id='ContentPlaceHolder1_ddlCustomerID']"
